@@ -1,0 +1,8 @@
+# .gitignore Iaas-Terraform
+
+# exclude directories
+.terraform/
+.terraform/*
+
+#exclude files
+variables.tf

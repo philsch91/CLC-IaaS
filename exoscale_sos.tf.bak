@@ -1,0 +1,4 @@
+resource "exoscale_s3bucket" "testbucket" {
+    bucket = "tftest"
+    acl = "public"
+}
