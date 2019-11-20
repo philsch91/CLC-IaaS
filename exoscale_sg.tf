@@ -15,7 +15,7 @@ resource "exoscale_security_group_rule" "ssh" {
   security_group_id = "${exoscale_security_group.security-group-1.id}"
   type = "INGRESS"
   protocol = "TCP"
-  cidr = "1.2.3.4/32"
+  cidr = "213.208.153.210/32"
   start_port = 22
   end_port = 22
 }
