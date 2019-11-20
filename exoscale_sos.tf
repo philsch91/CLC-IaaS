@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "content" {
-  bucket = "sos-bucket-1"
+  bucket = "${var.exoscale_bucket}"
   acl = "public-read"
 
   lifecycle {

@@ -14,14 +14,13 @@ apt install -y php-fpm
 apt install -y s3cmd
 
 echo "[default]
-host_base = sos-de-muc-1.exo.io
-host_bucket = %(bucket)s.de-muc-1.exo.io
+host_base = sos-"${var.exoscale_zone}".exo.io
+host_bucket = "${var.exoscale_bucket}"
 access_key = "${var.exoscale_key}"
 secret_key = "${var.exoscale_secret}"
 use_https = True" >/etc/sos.s3cfg
 
-echo '
-server {
+echo 'server {
     listen 80;
     root /var/www/html;
     index index.php;
@@ -43,22 +42,24 @@ server {
 
 systemctl reload nginx
 
-echo '
-<?php
+echo '<?php
 
-$url = "s3://sos-de-muc-1.exoscale.io/test-bucket-1";
+$url = "s3://${var.exoscale_bucket}";
 
 session_start();
 
 function saveInObjectStorage($text){
 	global $url;
 	$text = trim($text);
-	$timestamp = time();
+	
+    $timestamp = time();
 	$id = rand();
 	$filename = strval($timestamp)."-".strval($id).".txt";
-	file_put_contents($filename, $text);
 	
-	$cmd = "s3cmd put ".$filename." ".$url;
+    file_put_contents($filename, $text);
+	
+    //$cmd = "s3cmd -c /etc/sos.s3cfg sync $url"
+	$cmd = "s3cmd -c /etc/sos.s3cfg put ".$filename." ".$url;
 	exec($cmd, $out, $rc);
 	
 	return $rc;
@@ -67,16 +68,16 @@ function saveInObjectStorage($text){
 function listFromObjectStorage(){
 	global $url;
 	
-	exec("s3cmd ls ".$url, $output, $rc);
+	exec("s3cmd la ".$url." | awk {\'print \$4\'}", $output, $rc);
 	$objects = array_filter($output);
 	
 	return $objects;
 }
 
-function getFromObjectStorage($objectname){
+function getFromObjectStorage($objectname, $filename){
 	global $url;
 	
-	$cmd = "s3cmd get ".$url."/".$objectname." ".$objectname;
+	$cmd = "s3cmd get ".$objectname." ".$filename." --skip-existing";
 	exec($cmd, $out2, $rc);
 	
 	return $rc;
@@ -269,9 +270,10 @@ if(!empty($_POST["submit"]) && !empty($_POST["message"])){
 <?php
 $objects = listFromObjectStorage();
 foreach($objects as $i => $objectname){
-	$rc = getFromObjectStorage($objectname);
+    $filename = substr($objectname,strrpos($objectname,"/")+1);
+	$rc = getFromObjectStorage($objectname, $filename);
 	if($rc === 0){
-		$message = file_get_contents($objectname);
+		$message = file_get_contents($filename);
 		echo("<p>".$message."</p>");
 	}
 }
