@@ -6,4 +6,5 @@
 
 #exclude files
 variables.tf
-.tfstate
+*.tfstate
+*.tfstate.backup
