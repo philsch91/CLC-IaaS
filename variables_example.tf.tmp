@@ -1,12 +1,22 @@
 variable "exoscale_key" {
     default = ""
 }
+
 variable "exoscale_secret" {
     default = ""
 }
-variable "zone" {
+
+variable "exoscale_zone" {
   #default = "ch-gva-2"
   #default = "de-fra-1"
   default = "de-muc-1"
 }
-#variable "bucket" {}
+
+variable "exoscale_bucket" {
+  //default = %(bucket)s.de-muc-1.exo.io
+  default = ""
+}
+
+variable "outbound_ip" {
+  default = ""
+}
