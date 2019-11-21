@@ -6,3 +6,4 @@
 
 #exclude files
 variables.tf
+.tfstate
