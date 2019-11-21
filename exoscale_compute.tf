@@ -1,5 +1,5 @@
 resource "exoscale_compute" "compute-1" {
-    zone = "de-muc-1"
+    zone = "${var.exoscale_zone}"
     display_name = "instance-1"
     template = "Linux Ubuntu 18.04 LTS 64-bit"
     size = "Micro"
@@ -12,6 +12,8 @@ apt update
 apt install -y nginx
 apt install -y php-fpm
 apt install -y s3cmd
+
+chmod -R 0777 /var/www/html
 
 echo "[default]
 host_base = sos-"${var.exoscale_zone}".exo.io
@@ -68,7 +70,7 @@ function saveInObjectStorage($text){
 function listFromObjectStorage(){
 	global $url;
 	
-	exec("s3cmd la ".$url." | awk {\'print \$4\'}", $output, $rc);
+	exec("s3cmd -c /etc/sos.s3cfg la ".$url." | awk '"'{print \$4}'"'", $output, $rc);
 	$objects = array_filter($output);
 	
 	return $objects;
@@ -77,7 +79,7 @@ function listFromObjectStorage(){
 function getFromObjectStorage($objectname, $filename){
 	global $url;
 	
-	$cmd = "s3cmd get ".$objectname." ".$filename." --skip-existing";
+	$cmd = "s3cmd -c /etc/sos.s3cfg get ".$objectname." ".$filename." --skip-existing";
 	exec($cmd, $out2, $rc);
 	
 	return $rc;
