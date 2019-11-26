@@ -53,6 +53,8 @@ session_start();
 function saveInObjectStorage($text){
 	global $url;
 	$text = trim($text);
+	$dateStr = date("Y-m-d H:i:s");
+	$text = $dateStr." ".$text;
 	
     $timestamp = time();
 	$id = rand();
@@ -152,7 +154,7 @@ if(!empty($_POST["submit"]) && !empty($_POST["message"])){
     }
 	#content{
 		/*position: fixed;*/
-		width: 60%;
+		width: 50%;
 		margin: 0 auto;
 		padding-top: 2%;
 		padding-left: 5%;
@@ -219,20 +221,22 @@ if(!empty($_POST["submit"]) && !empty($_POST["message"])){
 		text-transform: none;
 	}
 	#inputContainer {
+		width: 460px;
 		margin-top: 0px;
+		margin: 0 auto;
         padding: 0px;
     }
 	textarea#messageBox {
-		width: 440px;
+		width: 460px;
 		/*width: 94%;*/
 		height: 120px;
 		border: 2px solid #cccccc;
-		/*margin: 0 auto;*/
+		margin: 0 auto;
 		padding-left: 10px;
 		padding-right: 10px;
+		padding: 10px;
 		font-family: sans-serif, Tahoma;
 		font-size: 12px;
-		padding: 10px;
 		/*background-image: url(bg.gif);
 		background-position: bottom right;
 		background-repeat: no-repeat; */
@@ -246,11 +250,12 @@ if(!empty($_POST["submit"]) && !empty($_POST["message"])){
 		/*background-color: #BDBDBD;*/
 	}
 	#listContainer{
+		width: 460px;
 		height: 300px;
-        width: 460px;
 		overflow-y: auto;
 		border: 0px solid;
 		margin-top: 0px;
+		margin: 0 auto;
 		padding-left: 2px;
 		padding-right: 2px;
     }
@@ -287,6 +292,7 @@ foreach($objects as $i => $objectname){
 		<br>
 		<input type="submit" name="submit" value="   Save   ">
 	</form>
+</div>
 </div>
 <!-- -->
 <div id="footer">
